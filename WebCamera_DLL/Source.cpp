@@ -35,7 +35,7 @@ DLLExport void getCameraTexture(void* camera, unsigned char* data)
 	//std::cout << "img size:" << img.rows << " * " << img.cols << std::endl;
     
     // リサイズ
-	cv::Mat resized_img(img.rows * 0.2, img.cols * 0.2, img.type());
+	cv::Mat resized_img(img.rows * 0.5, img.cols * 0.5, img.type());
     cv::resize(img, resized_img, resized_img.size(), cv::INTER_CUBIC);
     
     // 別ウィンドウの画を更新
