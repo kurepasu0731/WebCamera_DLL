@@ -31,7 +31,7 @@ DLLExport void releaseCamera(void* camera)
     delete vc;
 }
 
-DLLExport void getCameraTexture(void* camera, unsigned char* data, bool isRecord)
+DLLExport void getCameraTexture(void* camera, unsigned char* data, bool isRecord, bool isShowWin)
 {
     auto vc = static_cast<cv::VideoCapture*>(camera);
 
@@ -46,13 +46,15 @@ DLLExport void getCameraTexture(void* camera, unsigned char* data, bool isRecord
 
 			//std::cout << "img size:" << img.rows << " * " << img.cols << std::endl;
     
-			// リサイズ
-			cv::Mat resized_img(img.rows * 0.5, img.cols * 0.5, img.type());
-			cv::resize(img, resized_img, resized_img.size(), cv::INTER_CUBIC);
+			if(isShowWin)
+			{
+				// リサイズ
+				cv::Mat resized_img(img.rows * 0.5, img.cols * 0.5, img.type());
+				cv::resize(img, resized_img, resized_img.size(), cv::INTER_CUBIC);
     
-			// 別ウィンドウの画を更新
-			cv::imshow("web camera", resized_img);
-    
+				// 別ウィンドウの画を更新
+				cv::imshow("web camera", resized_img);
+			}
 			//↓↓処理するのはこっちに戻ってやるのだからx反転色変換いらないのでは？？
 			// RGB --> ARGB 変換
 		 //   cv::Mat argb_img, flip_img;

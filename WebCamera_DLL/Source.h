@@ -15,5 +15,5 @@ extern "C" {
    DLLExport void* getCamera(int device);
    DLLExport void setCameraProp(void* camera, int width, int height, int fps);
    DLLExport void releaseCamera(void* camera);
-   DLLExport void getCameraTexture(void* camera, unsigned char* data, bool isRecord);
+   DLLExport void getCameraTexture(void* camera, unsigned char* data, bool isRecord, bool isShowWin);
 }
