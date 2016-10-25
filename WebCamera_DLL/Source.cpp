@@ -5,10 +5,19 @@ DLLExport void* getCamera(int device)
 {
     // ウィンドウを開く
     cv::namedWindow("web camera");
-	//普通にWebCameraから取ってくるとき
-    return static_cast<void*>(new cv::VideoCapture(device));
-	//録画再生用	
-    //return static_cast<void*>(new cv::VideoCapture("capture.avi"));
+
+
+	//-1だったら再生モード
+	if(device != -1)
+	{
+		//普通にWebCameraから取ってくるとき
+		return static_cast<void*>(new cv::VideoCapture(device));
+	}
+	else
+	{
+		//録画再生用	
+		return static_cast<void*>(new cv::VideoCapture("capture.avi"));
+	}
 }
 
 DLLExport void setCameraProp(void* camera, int width, int height, int fps)
@@ -18,15 +27,19 @@ DLLExport void setCameraProp(void* camera, int width, int height, int fps)
 	vc->set(CV_CAP_PROP_FRAME_WIDTH, width);
 	vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 	vc->set(CV_CAP_PROP_FPS, fps);
-	//録画用
-	//videoWriter = cv::VideoWriter("capture.avi", CV_FOURCC('X','V','I','D'), fps, cv::Size(width, height));
+
+	//if(*camdevice != -1)
+	{
+		//録画用
+		//videoWriter = cv::VideoWriter("capture.avi", CV_FOURCC('X','V','I','D'), fps, cv::Size(width, height));
+	}
 }
 
 DLLExport void releaseCamera(void* camera)
 {
     // ウィンドウを閉じる
     cv::destroyWindow("web camera");
-	//videoWriter.release();
+	if(&videoWriter != nullptr && videoWriter.isOpened()) videoWriter.release();
     auto vc = static_cast<cv::VideoCapture*>(camera);
     delete vc;
 }
@@ -35,6 +48,14 @@ DLLExport void getCameraTexture(void* camera, unsigned char* data, bool isRecord
 {
     auto vc = static_cast<cv::VideoCapture*>(camera);
 
+	if(isRecord && !videoWriter.isOpened())
+	{
+		//録画用
+		videoWriter = cv::VideoWriter("capture.avi", CV_FOURCC('X','V','I','D'), vc->get(CV_CAP_PROP_FPS), cv::Size((int)(vc->get(CV_CAP_PROP_FRAME_WIDTH)), (int)(vc->get(CV_CAP_PROP_FRAME_WIDTH))));
+
+	}
+
+
 		// カメラ画の取得
 		cv::Mat img;
 		*vc >> img;
@@ -42,7 +63,7 @@ DLLExport void getCameraTexture(void* camera, unsigned char* data, bool isRecord
 		if(!img.empty())
 		{
 			//録画フラグがたっていたら録画もする
-			//if(isRecord) videoWriter << img;
+			if(isRecord) videoWriter << img;
 
 			//std::cout << "img size:" << img.rows << " * " << img.cols << std::endl;
     

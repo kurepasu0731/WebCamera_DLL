@@ -9,7 +9,7 @@
 //using namespace cv;
 
 //VideoWriter
-//cv::VideoWriter videoWriter;
+cv::VideoWriter videoWriter;
 
 extern "C" {
    DLLExport void* getCamera(int device);
