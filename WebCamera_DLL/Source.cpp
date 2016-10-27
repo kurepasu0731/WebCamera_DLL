@@ -20,7 +20,7 @@ DLLExport void* getCamera(int device)
 	}
 }
 
-DLLExport void setCameraProp(void* camera, int width, int height, int fps)
+DLLExport void setCameraProp(void* camera, int device, int width, int height, int fps)
 {
     auto vc = static_cast<cv::VideoCapture*>(camera);
 
@@ -28,18 +28,18 @@ DLLExport void setCameraProp(void* camera, int width, int height, int fps)
 	vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 	vc->set(CV_CAP_PROP_FPS, fps);
 
-	//if(*camdevice != -1)
+	if(device != -1)
 	{
 		//録画用
-		//videoWriter = cv::VideoWriter("capture.avi", CV_FOURCC('X','V','I','D'), fps, cv::Size(width, height));
+		videoWriter = cv::VideoWriter("capture.avi", CV_FOURCC('X','V','I','D'), fps, cv::Size(width, height));
 	}
 }
 
-DLLExport void releaseCamera(void* camera)
+DLLExport void releaseCamera(void* camera, int device)
 {
     // ウィンドウを閉じる
     cv::destroyWindow("web camera");
-	if(&videoWriter != nullptr && videoWriter.isOpened()) videoWriter.release();
+	if(device != -1) videoWriter.release();
     auto vc = static_cast<cv::VideoCapture*>(camera);
     delete vc;
 }
